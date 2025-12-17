@@ -1,0 +1,22 @@
+# Datasets (Tracked by DVC)
+dataset_raw/
+dataset_preprocessing/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+venv/
+env/
+
+# DVC
+.dvc/tmp/
+.dvc/cache/
+/dataset_raw
+/dataset_preprocessing
