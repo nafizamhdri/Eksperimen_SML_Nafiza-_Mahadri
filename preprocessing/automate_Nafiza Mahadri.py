@@ -41,6 +41,44 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def handle_outliers(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Menangani outliers menggunakan IQR (Interquartile Range) method.
+    """
+    print("\n Handling outliers (IQR Method)")
+    
+    initial_rows = len(df)
+    
+    # Kolom numerik yang akan di-check untuk outliers
+    numeric_cols = ['year', 'selling_price', 'km_driven']
+    
+    for col in numeric_cols:
+        if col in df.columns:
+            Q1 = df[col].quantile(0.25)
+            Q3 = df[col].quantile(0.75)
+            IQR = Q3 - Q1
+            
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+            
+            # Hitung outliers sebelum remove
+            outliers_count = ((df[col] < lower_bound) | (df[col] > upper_bound)).sum()
+            
+            # Remove outliers
+            df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
+            
+            print(f"  - {col}: {outliers_count} outliers dihapus ({outliers_count/initial_rows*100:.2f}%)")
+    
+    after_outliers = len(df)
+    total_removed = initial_rows - after_outliers
+    
+    print(f" Total baris dihapus: {total_removed} ({total_removed/initial_rows*100:.2f}%)")
+    print(f" Data setelah handling outliers. Shape: {df.shape}")
+    
+    return df
+
+
+
 def feature_engineering(df: pd.DataFrame, current_year: int = 2024) -> pd.DataFrame:
 
     print("\n Melakukan feature engineering")
@@ -131,17 +169,20 @@ def preprocess_data(input_path: str, output_path: str) -> pd.DataFrame:
     # Step 2: Clean data
     df = clean_data(df)
     
-    # Step 3: Feature engineering
+    # Step 3: Handle outliers (NEW!)
+    df = handle_outliers(df)
+    
+    # Step 4: Feature engineering
     df = feature_engineering(df)
     
-    # Step 4: Encode categorical features
+    # Step 5: Encode categorical features
     df, encoders = encode_features(df)
     
-    # Step 5: Normalize numerical features
+    # Step 6: Normalize numerical features
     df, scaler = normalize_features(df)
     
-    # Step 6: Save processed data
-    print("\n Menyimpan data terproses")
+    # Step 7: Save processed data
+    print("\\n Menyimpan data terproses")
     
     # Membuat direktori output jika belum ada
     output_dir = os.path.dirname(output_path)
