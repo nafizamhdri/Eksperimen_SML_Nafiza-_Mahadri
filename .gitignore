@@ -1,6 +1,6 @@
 # Datasets (Tracked by DVC)
 dataset_raw/
-dataset_preprocessing/
+# dataset_preprocessing/  # REMOVED - need to push to GitHub for submission
 
 # Python
 __pycache__/
@@ -19,4 +19,4 @@ env/
 .dvc/tmp/
 .dvc/cache/
 /dataset_raw
-/dataset_preprocessing
+# /dataset_preprocessing  # REMOVED - need to push to GitHub for submission
